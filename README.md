@@ -1,4 +1,3 @@
-tdd-kata-python
-===============
+### tdd-kata-python
 
-Going through several TDD Katas.
+Going through several TDD Katas with Python.
