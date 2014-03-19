@@ -148,3 +148,4 @@ The full set of dependencies is:
     E   F H
     F   H
 
+### [Chess Board](http://www.daedtech.com/tdd-and-modeling-a-chess-game)
