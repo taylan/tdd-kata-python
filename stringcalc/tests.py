@@ -42,3 +42,9 @@ class StringCalculatorTest(TestCase):
             self.target.add('-1\n2,3')
             self.target.add('-1,2,3')
             self.target.add('1,2,-3')
+
+    def test_negative_number_exception_has_all_negative_inputs(self):
+        try:
+            self.target.add('-1,-2,3,-4')
+        except NegativeInputException as nie:
+            self.assertIn(', '.join(map(str, [-1, -2, -4])), str(nie))

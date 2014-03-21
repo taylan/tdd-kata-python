@@ -59,4 +59,7 @@ class NegativeInputException(Exception):
 
     def __str__(self):
         return "Negative input{0}: {1}".format('s' if len(self._inputs) else '',
-                                               ', '.join(self._inputs))
+                                               ', '.join(map(str, self._inputs)))
+
+    def __repr__(self):
+        return str(self)
