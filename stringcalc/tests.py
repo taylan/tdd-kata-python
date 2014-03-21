@@ -48,3 +48,7 @@ class StringCalculatorTest(TestCase):
             self.target.add('-1,-2,3,-4')
         except NegativeInputException as nie:
             self.assertIn(', '.join(map(str, [-1, -2, -4])), str(nie))
+
+    def test_numbers_greater_than_1000_are_ignored(self):
+        self.assertEqual(self.target.add('1,2,1000'), 1003)
+        self.assertEqual(self.target.add('1,2,1001'), 3)

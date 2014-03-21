@@ -50,7 +50,7 @@ class StringCalculator():
         if neg_numbers:
             raise NegativeInputException(neg_numbers)
 
-        return sum(numbers)
+        return sum([n for n in numbers if n <= 1000])
 
 
 class NegativeInputException(Exception):
