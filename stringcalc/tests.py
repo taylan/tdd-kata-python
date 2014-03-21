@@ -1,11 +1,14 @@
-from unittest import TestCase, skip
+from unittest import TestCase
 from stringcalc import StringCalculator
 
 
 class StringCalculatorTest(TestCase):
 
+    def _init_calculator(self):
+        return StringCalculator()
+
     def setUp(self):
-        self.target = StringCalculator()
+        self.target = self._init_calculator()
 
     def test_empty_string_gives_0(self):
         self.assertEqual(self.target.add(''), 0)
@@ -29,3 +32,6 @@ class StringCalculatorTest(TestCase):
     def test_different_delimiters_in_input(self):
         self.assertEqual(self.target.add('1\n2,3'), 6)
         self.assertEqual(self.target.add('1,2\n3'), 6)
+
+    def test_custom_delimiter_specification(self):
+        self.assertEqual(self.target.add('//;\n1;2;3'), 6)

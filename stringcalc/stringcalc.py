@@ -23,10 +23,18 @@ class StringCalculator():
         except (ValueError, TypeError):
             return None
 
+    def _parse_custom_delimiter(self, inp):
+        delim, inp = inp.split('\n', 1)
+        self.SEPERATORS = delim.lstrip('/')
+        return inp
+
     def add(self, inp):
         inp = inp.strip()
         if not inp:
             return 0
+
+        if inp.startswith('//'):
+            inp = self._parse_custom_delimiter(inp)
 
         single_num = self._parse_single_number(inp)
         if single_num:
