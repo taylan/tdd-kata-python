@@ -1,5 +1,5 @@
 from unittest import TestCase
-from stringcalc import StringCalculator
+from stringcalc import StringCalculator, NegativeInputException
 
 
 class StringCalculatorTest(TestCase):
@@ -35,3 +35,10 @@ class StringCalculatorTest(TestCase):
 
     def test_custom_delimiter_specification(self):
         self.assertEqual(self.target.add('//;\n1;2;3'), 6)
+
+    def test_negative_number_raises_exception(self):
+        with self.assertRaises(NegativeInputException):
+            self.target.add('-1\n2')
+            self.target.add('-1\n2,3')
+            self.target.add('-1,2,3')
+            self.target.add('1,2,-3')

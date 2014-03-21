@@ -19,7 +19,7 @@ class StringCalculator():
 
     def _parse_multiple_numbers(self, inp):
         try:
-            return sum(map(int, self._split_numbers(inp)))
+            return list(map(int, self._split_numbers(inp)))
         except (ValueError, TypeError):
             return None
 
@@ -36,12 +36,27 @@ class StringCalculator():
         if inp.startswith('//'):
             inp = self._parse_custom_delimiter(inp)
 
+        numbers = []
         single_num = self._parse_single_number(inp)
         if single_num:
-            return single_num
+            numbers.append(single_num)
+        else:
+            numbers = self._parse_multiple_numbers(inp)
 
-        multiple_num_sum = self._parse_multiple_numbers(inp)
-        if multiple_num_sum:
-            return multiple_num_sum
+        if not numbers:
+            return ''
 
-        return ''
+        neg_numbers = [n for n in numbers if n < 0]
+        if neg_numbers:
+            raise NegativeInputException(neg_numbers)
+
+        return sum(numbers)
+
+
+class NegativeInputException(Exception):
+    def __init__(self, inputs):
+        self._inputs = inputs
+
+    def __str__(self):
+        return "Negative input{0}: {1}".format('s' if len(self._inputs) else '',
+                                               ', '.join(self._inputs))
