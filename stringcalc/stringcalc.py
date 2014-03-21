@@ -11,10 +11,9 @@ class StringCalculator():
             return None
 
     def _split_numbers(self, inp):
-        lines = [l for l in inp.splitlines()]
-        if '\n' in lines:
-            if [l for l in lines if l.strip() == '']:
-                return None
+        lines = inp.split('\n')
+        if [l for l in lines if l.strip() == '']:
+            return None
         return self.SEPERATORS.join(lines).strip().split(self.SEPERATORS)
 
     def _parse_multiple_numbers(self, inp):
@@ -29,8 +28,7 @@ class StringCalculator():
         return inp
 
     def add(self, inp):
-        inp = inp.strip()
-        if not inp:
+        if not inp.strip():
             return 0
 
         if inp.startswith('//'):
@@ -60,6 +58,3 @@ class NegativeInputException(Exception):
     def __str__(self):
         return "Negative input{0}: {1}".format('s' if len(self._inputs) else '',
                                                ', '.join(map(str, self._inputs)))
-
-    def __repr__(self):
-        return str(self)
