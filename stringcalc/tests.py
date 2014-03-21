@@ -52,3 +52,10 @@ class StringCalculatorTest(TestCase):
     def test_numbers_greater_than_1000_are_ignored(self):
         self.assertEqual(self.target.add('1,2,1000'), 1003)
         self.assertEqual(self.target.add('1,2,1001'), 3)
+        self.assertEqual(self.target.add('1001'), 0)
+
+    def test_delimiter_can_be_of_any_length(self):
+        self.assertEqual(self.target.add('//;;;\n1;;;2;;;3'), 6)
+        self.assertEqual(self.target.add('//**\n1**2**3'), 6)
+        self.assertEqual(self.target.add('//----\n1----2----3'), 6)
+        self.assertEqual(self.target.add('//----\n1----2\n3'), 6)

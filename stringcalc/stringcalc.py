@@ -15,7 +15,7 @@ class StringCalculator():
         if '\n' in lines:
             if [l for l in lines if l.strip() == '']:
                 return None
-        return ','.join(lines).strip().split(self.SEPERATORS)
+        return self.SEPERATORS.join(lines).strip().split(self.SEPERATORS)
 
     def _parse_multiple_numbers(self, inp):
         try:
