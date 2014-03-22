@@ -59,3 +59,9 @@ class StringCalculatorTest(TestCase):
         self.assertEqual(self.target.add('//**\n1**2**3'), 6)
         self.assertEqual(self.target.add('//----\n1----2----3'), 6)
         self.assertEqual(self.target.add('//----\n1----2\n3'), 6)
+
+    def test_delimiter_can_be_of_any_length_with_square_brackets(self):
+        self.assertEqual(self.target.add('//[;;;]\n1;;;2;;;3'), 6)
+        self.assertEqual(self.target.add('//[**]\n1**2**3'), 6)
+        self.assertEqual(self.target.add('//[----]\n1----2----3'), 6)
+        self.assertEqual(self.target.add('//[----]\n1----2\n3'), 6)

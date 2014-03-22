@@ -1,7 +1,10 @@
+import re
 
 
 class StringCalculator():
-    SEPERATORS = ','
+    def __init__(self):
+        self.delimiter_re = re.compile(r'\[(.*)\]')
+        self.separator = ','
 
     @staticmethod
     def _parse_single_number(inp):
@@ -14,7 +17,7 @@ class StringCalculator():
         lines = inp.split('\n')
         if [l for l in lines if l.strip() == '']:
             return None
-        return self.SEPERATORS.join(lines).strip().split(self.SEPERATORS)
+        return self.separator.join(lines).strip().split(self.separator)
 
     def _parse_multiple_numbers(self, inp):
         try:
@@ -24,7 +27,10 @@ class StringCalculator():
 
     def _parse_custom_delimiter(self, inp):
         delim, inp = inp.split('\n', 1)
-        self.SEPERATORS = delim.lstrip('/')
+        self.separator = delim.lstrip('/')
+        re_match = self.delimiter_re.match(self.separator)
+        if re_match:
+            self.separator = re_match.group(1)
         return inp
 
     def add(self, inp):
