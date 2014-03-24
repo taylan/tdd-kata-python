@@ -26,8 +26,8 @@ class StringCalculator():
             return None
 
     def _parse_custom_delimiter(self, inp):
-        delim, inp = inp.split('\n', 1)
-        self.separator = delim.lstrip('/')
+        delimiter, inp = inp.split('\n', 1)
+        self.separator = delimiter.lstrip('/')
         re_match = self.delimiter_re.match(self.separator)
         if re_match:
             self.separator = re_match.group(1)
