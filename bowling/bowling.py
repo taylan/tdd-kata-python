@@ -1,6 +1,7 @@
+from enum import Enum
 
 
-class GameStates():
+class GameStates(Enum):
     Pending, InProgress, Finished = range(3)
 
 
