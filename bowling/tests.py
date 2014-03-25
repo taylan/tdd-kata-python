@@ -1,4 +1,4 @@
-from bowling import BowlingGame, GameStates
+from bowling import BowlingGame, BowlingFrame, GameStates, BowlingGameFinishedException
 from unittest import TestCase, skip
 
 
@@ -24,6 +24,13 @@ class BowlingGameTest(BowlingGameTestCaseBase):
         self.assertEqual(self.target.current_frame_number, 10)
         self.assertEqual(self.target.game_state, GameStates.Finished)
 
+    def test_cannot_roll_after_game_is_finished(self):
+        for i in range(20):
+            self.target.roll(1)
+        self.assertEqual(self.target.game_state, GameStates.Finished)
+        with self.assertRaises(BowlingGameFinishedException):
+            self.target.roll()
+
     def test_game_remembers_last_knocked_down_pin_count(self):
         self.target.roll(1)
         self.assertEqual(self.target.last_throw_count, 1)
@@ -41,6 +48,41 @@ class BowlingGameTest(BowlingGameTestCaseBase):
         self.target.roll(2)
         self.assertEqual(self.target.current_frame_number, 2)
 
+    def test_bowling_game_str(self):
+        self.assertEqual(str(self.target), '<BowlingGame frm: {0}>'.format(1))
+        self.target.roll(1)
+        self.target.roll(1)
+        self.assertEqual(str(self.target), '<BowlingGame frm: {0}>'.format(2))
+
+
     # def test_strike_increments_frame(self):
     #     self.target.roll(10)
     #     self.assertEqual(self.target.current_frame, 2)
+
+
+class BowlingFrameTestCase(TestCase):
+    def setUp(self):
+        self.target = BowlingFrame(1)
+
+    def test_frame_is_complete_after_two_rolls(self):
+        self.assertFalse(self.target.is_complete)
+        self.target.do_roll(3)
+        self.assertFalse(self.target.is_complete)
+        self.target.do_roll(5)
+        self.assertTrue(self.target.is_complete)
+
+    def test_frame_last_roll_returns_none_when_no_roll_is_made(self):
+        self.assertIsNone(self.target.last_roll)
+
+    def test_frame_last_roll_returns_correct_value(self):
+        self.target.do_roll(2)
+        self.assertEqual(self.target.last_roll, 2)
+        self.target.do_roll(4)
+        self.assertEqual(self.target.last_roll, 4)
+
+    def test_bowling_frame_str(self):
+        self.assertEqual(str(self.target),
+                         '<BowlingFrame({0}), rolls: []>'.format(1))
+        self.target.do_roll(2)
+        self.assertEqual(str(self.target),
+                         '<BowlingFrame({0}), rolls: [2]>'.format(1))

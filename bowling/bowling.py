@@ -2,6 +2,10 @@ from enum import Enum
 from random import randrange
 
 
+class BowlingGameFinishedException(Exception):
+    pass
+
+
 class GameStates(Enum):
     InProgress, Finished = range(2)
 
@@ -25,9 +29,6 @@ class BowlingFrame():
     def __str__(self):
         return '<BowlingFrame({0}), rolls: {1}>'.format(self._num, self._rolls)
 
-    def __repr__(self):
-        return str(self)
-
 
 class BowlingGame():
     def __init__(self):
@@ -49,17 +50,13 @@ class BowlingGame():
 
     def roll(self, pins=None):
         if self.game_state == GameStates.Finished:
-            pass
+            raise BowlingGameFinishedException()
 
         throw = pins or randrange(0, 11)
-        if not self._frames[-1].is_complete:
-            self._frames[-1].do_roll(throw)
-            if len(self._frames) < 10 and self._frames[-1].is_complete:
-                self._frames.append(BowlingFrame(len(self._frames) + 1))
-        else:
-            frm = BowlingFrame(len(self._frames) + 1)
-            frm.do_roll(throw)
-            self._frames.append(frm)
+        self._frames[-1].do_roll(throw)
+
+        if len(self._frames) < 10 and self._frames[-1].is_complete:
+            self._frames.append(BowlingFrame(len(self._frames) + 1))
 
     def __str__(self):
         return '<BowlingGame frm: {0}>'.format(self.current_frame_number)
