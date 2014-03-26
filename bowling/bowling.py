@@ -40,7 +40,7 @@ class BowlingGame():
 
     @property
     def game_state(self):
-        return GameStates.InProgress if len(self._frames) != 10\
+        return GameStates.InProgress if len(self._frames) != 10 \
             or [frm for frm in self._frames if not frm.is_complete] \
             else GameStates.Finished
 

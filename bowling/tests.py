@@ -1,5 +1,7 @@
-from bowling import BowlingGame, BowlingFrame, GameStates, BowlingGameFinishedException
-from unittest import TestCase, skip
+from unittest import TestCase
+
+from bowling import BowlingGame, BowlingFrame, GameStates, \
+    BowlingGameFinishedException
 
 
 class BowlingGameTestCaseBase(TestCase):
@@ -53,11 +55,6 @@ class BowlingGameTest(BowlingGameTestCaseBase):
         self.target.roll(1)
         self.target.roll(1)
         self.assertEqual(str(self.target), '<BowlingGame frm: {0}>'.format(2))
-
-
-    # def test_strike_increments_frame(self):
-    #     self.target.roll(10)
-    #     self.assertEqual(self.target.current_frame, 2)
 
 
 class BowlingFrameTestCase(TestCase):
