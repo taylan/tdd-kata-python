@@ -61,7 +61,8 @@ class BowlingGame():
         self._frames[-1].do_roll(throw)
         self._score += throw
 
-        if len(self._frames) < 10 and self._frames[-1].is_complete:
+        if self.game_state != GameStates.Finished and \
+                self._frames[-1].is_complete:
             self._frames.append(BowlingFrame(len(self._frames) + 1))
 
     def __str__(self):
