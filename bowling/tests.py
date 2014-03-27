@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from bowling import BowlingGame, BowlingFrame, GameStates, \
+from bowling import BowlingGame, BowlingFrame, GameStates, FrameResults, \
     BowlingGameFinishedException
 
 
@@ -9,7 +9,7 @@ class BowlingGameTestCaseBase(TestCase):
         self.assertTrue(first <= val <= second, msg)
 
 
-class BowlingGameTest(BowlingGameTestCaseBase):
+class BowlingGameTestCase(BowlingGameTestCaseBase):
     def setUp(self):
         self.target = BowlingGame()
 
@@ -50,6 +50,17 @@ class BowlingGameTest(BowlingGameTestCaseBase):
         self.target.roll(2)
         self.assertEqual(self.target.current_frame_number, 2)
 
+    def test_bowling_game_str(self):
+        self.assertEqual(str(self.target), '<BowlingGame frm: {0}>'.format(1))
+        self.target.roll(1)
+        self.target.roll(1)
+        self.assertEqual(str(self.target), '<BowlingGame frm: {0}>'.format(2))
+
+
+class BowlingGameScoringTestCase(TestCase):
+    def setUp(self):
+        self.target = BowlingGame()
+
     def test_all_gutter_rolls_result_in_zero_score(self):
         for i in range(20):
             self.target.roll(0)
@@ -60,11 +71,11 @@ class BowlingGameTest(BowlingGameTestCaseBase):
         self.target.roll(10)
         self.assertEqual(self.target.current_frame_number, 2)
 
-    def test_bowling_game_str(self):
-        self.assertEqual(str(self.target), '<BowlingGame frm: {0}>'.format(1))
-        self.target.roll(1)
-        self.target.roll(1)
-        self.assertEqual(str(self.target), '<BowlingGame frm: {0}>'.format(2))
+    def test_all_1_rolls_result_in_20_score(self):
+        for i in range(20):
+            self.target.roll(1)
+
+        self.assertEqual(self.target.score, 20)
 
 
 class BowlingFrameTestCase(TestCase):
@@ -87,9 +98,22 @@ class BowlingFrameTestCase(TestCase):
         self.target.do_roll(4)
         self.assertEqual(self.target.last_roll, 4)
 
+    def test_frame_with_no_rolls_has_in_progress_state(self):
+        self.assertEqual(FrameResults.InProgress, self.target.state)
+
+    def test_frame_with_strike_has_strike_state(self):
+        self.target.do_roll(10)
+        self.assertEqual(FrameResults.Strike, self.target.state)
+
+    def test_frame_with_two_rolls_and_less_than_10_score_has_spare_state(self):
+        self.target.do_roll(3)
+        self.target.do_roll(6)
+        self.assertEqual(FrameResults.Spare, self.target.state)
+
     def test_bowling_frame_str(self):
         self.assertEqual(str(self.target),
                          '<BowlingFrame({0}), rolls: []>'.format(1))
         self.target.do_roll(2)
         self.assertEqual(str(self.target),
                          '<BowlingFrame({0}), rolls: [2]>'.format(1))
+

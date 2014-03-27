@@ -10,6 +10,10 @@ class GameStates(Enum):
     InProgress, Finished = range(2)
 
 
+class FrameResults(Enum):
+    InProgress, Strike, Spare = range(3)
+
+
 class BowlingFrame():
     def __init__(self, num):
         self._num = num
@@ -22,6 +26,14 @@ class BowlingFrame():
     @property
     def last_roll(self):
         return self._rolls[-1] if self._rolls else None
+
+    @property
+    def state(self):
+        if len(self._rolls) in [0, 1] and sum(self._rolls) < 10:
+            return FrameResults.InProgress
+        if len(self._rolls) == 1 and self._rolls[0] == 10:
+            return FrameResults.Strike
+        return FrameResults.Spare
 
     def do_roll(self, num):
         self._rolls.append(num)
