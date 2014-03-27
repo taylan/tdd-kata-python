@@ -50,6 +50,12 @@ class BowlingGameTest(BowlingGameTestCaseBase):
         self.target.roll(2)
         self.assertEqual(self.target.current_frame_number, 2)
 
+    def test_all_gutter_rolls_result_in_zero_score(self):
+        for i in range(20):
+            self.target.roll(0)
+
+        self.assertEqual(self.target.score, 0)
+
     def test_bowling_game_str(self):
         self.assertEqual(str(self.target), '<BowlingGame frm: {0}>'.format(1))
         self.target.roll(1)

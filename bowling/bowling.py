@@ -33,6 +33,7 @@ class BowlingFrame():
 class BowlingGame():
     def __init__(self):
         self._frames = [BowlingFrame(1)]
+        self._score = 0
 
     @property
     def current_frame_number(self):
@@ -48,12 +49,17 @@ class BowlingGame():
     def last_throw_count(self):
         return self._frames[-1].last_roll
 
+    @property
+    def score(self):
+        return self._score
+
     def roll(self, pins=None):
         if self.game_state == GameStates.Finished:
             raise BowlingGameFinishedException()
 
         throw = pins or randrange(0, 11)
         self._frames[-1].do_roll(throw)
+        self._score += throw
 
         if len(self._frames) < 10 and self._frames[-1].is_complete:
             self._frames.append(BowlingFrame(len(self._frames) + 1))
