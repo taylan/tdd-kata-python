@@ -17,7 +17,7 @@ class BowlingFrame():
 
     @property
     def is_complete(self):
-        return len(self._rolls) == 2
+        return sum(self._rolls) >= 10 or len(self._rolls) == 2
 
     @property
     def last_roll(self):

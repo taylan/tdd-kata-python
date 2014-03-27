@@ -56,6 +56,10 @@ class BowlingGameTest(BowlingGameTestCaseBase):
 
         self.assertEqual(self.target.score, 0)
 
+    def test_strike_in_first_roll_of_frame_ends_frame(self):
+        self.target.roll(10)
+        self.assertEqual(self.target.current_frame_number, 2)
+
     def test_bowling_game_str(self):
         self.assertEqual(str(self.target), '<BowlingGame frm: {0}>'.format(1))
         self.target.roll(1)
