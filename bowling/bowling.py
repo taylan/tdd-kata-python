@@ -57,7 +57,7 @@ class BowlingGame():
         if self.game_state == GameStates.Finished:
             raise BowlingGameFinishedException()
 
-        throw = pins or randrange(0, 11)
+        throw = pins if pins is not None else randrange(0, 11)
         self._frames[-1].do_roll(throw)
         self._score += throw
 
