@@ -50,6 +50,10 @@ class BowlingGameTestCase(BowlingGameTestCaseBase):
         self.target.roll(2)
         self.assertEqual(self.target.current_frame_number, 2)
 
+    def test_strike_in_first_roll_of_frame_ends_frame(self):
+        self.target.roll(10)
+        self.assertEqual(self.target.current_frame_number, 2)
+
     def test_bowling_game_str(self):
         self.assertEqual(str(self.target), '<BowlingGame frm: {0}>'.format(1))
         self.target.roll(1)
@@ -66,10 +70,6 @@ class BowlingGameScoringTestCase(TestCase):
             self.target.roll(0)
 
         self.assertEqual(self.target.score, 0)
-
-    def test_strike_in_first_roll_of_frame_ends_frame(self):
-        self.target.roll(10)
-        self.assertEqual(self.target.current_frame_number, 2)
 
     def test_all_1_rolls_result_in_20_score(self):
         for i in range(20):
@@ -110,10 +110,13 @@ class BowlingFrameTestCase(TestCase):
         self.target.do_roll(6)
         self.assertEqual(FrameResults.Spare, self.target.state)
 
+    def test_strike_in_first_roll_completes_frame(self):
+        self.target.do_roll(10)
+        self.assertTrue(self.target.is_complete)
+
     def test_bowling_frame_str(self):
         self.assertEqual(str(self.target),
                          '<BowlingFrame({0}), rolls: []>'.format(1))
         self.target.do_roll(2)
         self.assertEqual(str(self.target),
                          '<BowlingFrame({0}), rolls: [2]>'.format(1))
-
