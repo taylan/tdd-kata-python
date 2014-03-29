@@ -77,6 +77,19 @@ class BowlingGameScoringTestCase(TestCase):
 
         self.assertEqual(self.target.score, 20)
 
+    def test_open_frame_score_is_number_of_pins_knocked_down(self):
+        self.target.roll(3)
+        self.target.roll(3)  # end of first frame. open frame.
+        self.target.roll(3)
+        self.assertEqual(self.target.score, 9)
+
+    def test_spare_frame_score_is_own_score_plus_next_throw(self):
+        self.target.roll(7)
+        self.target.roll(3)  # end of first frame. spare.
+        self.target.roll(7)
+        self.target.roll(2)  # end of second frame.
+        self.assertEqual(self.target.score, 26)
+
 
 class BowlingFrameTestCase(TestCase):
     def setUp(self):
@@ -97,6 +110,11 @@ class BowlingFrameTestCase(TestCase):
         self.assertEqual(self.target.last_roll, 2)
         self.target.do_roll(4)
         self.assertEqual(self.target.last_roll, 4)
+
+    def test_frame_first_roll_returns_correct_value(self):
+        self.target.do_roll(2)
+        self.target.do_roll(4)
+        self.assertEqual(self.target.first_roll, 2)
 
     def test_frame_with_no_rolls_has_in_progress_state(self):
         self.assertEqual(self.target.state, FrameResults.InProgress)
