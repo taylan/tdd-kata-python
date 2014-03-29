@@ -32,6 +32,10 @@ class BowlingFrame():
         return self._rolls[-1] if self._rolls else None
 
     @property
+    def rolls(self):
+        return self._rolls
+
+    @property
     def basic_score(self):
         return sum(self._rolls)
 
@@ -83,10 +87,16 @@ class BowlingGame():
             elif frm.state == FrameResults.Spare:
                 total_score += frm.basic_score
                 if len(self._frames) > i:
-                    print(self._frames[i+1])
                     next_throw = self._frames[i+1].first_roll
                     if next_throw:
                         total_score += next_throw
+            elif frm.state == FrameResults.Strike:
+                total_score += frm.basic_score
+                if len(self._frames) > i:
+                    next_throws = self._frames[i+1].rolls
+                    if len(next_throws) < 2 and len(self._frames) > i+2:
+                        next_throws.append(self._frames[i+2].rolls)
+                    total_score += sum(next_throws[:2])
 
         return total_score
 

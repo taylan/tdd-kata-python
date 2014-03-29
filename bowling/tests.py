@@ -83,12 +83,19 @@ class BowlingGameScoringTestCase(TestCase):
         self.target.roll(3)
         self.assertEqual(self.target.score, 9)
 
-    def test_spare_frame_score_is_own_score_plus_next_throw(self):
+    def test_spare_frame_score_is_own_score_plus_next_roll(self):
         self.target.roll(7)
         self.target.roll(3)  # end of first frame. spare.
         self.target.roll(7)
         self.target.roll(2)  # end of second frame.
         self.assertEqual(self.target.score, 26)
+
+    def test_strike_frame_score_is_own_score_plus_next_two_rolls(self):
+        self.target.roll(10)
+        self.assertEqual(self.target.score, 10)
+        self.target.roll(3)
+        self.target.roll(7)
+        self.assertEqual(self.target.score, 30)
 
 
 class BowlingFrameTestCase(TestCase):
