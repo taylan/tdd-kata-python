@@ -11,7 +11,7 @@ class GameStates(Enum):
 
 
 class FrameResults(Enum):
-    InProgress, Strike, Spare = range(3)
+    InProgress, Open, Spare, Strike = range(4)
 
 
 class BowlingFrame():
@@ -29,11 +29,12 @@ class BowlingFrame():
 
     @property
     def state(self):
-        if len(self._rolls) in [0, 1] and sum(self._rolls) < 10:
-            return FrameResults.InProgress
-        if len(self._rolls) == 1 and self._rolls[0] == 10:
-            return FrameResults.Strike
-        return FrameResults.Spare
+        if sum(self._rolls) < 10:
+            return FrameResults.InProgress if len(self._rolls) in [0, 1] else \
+                FrameResults.Open
+        else:
+            return FrameResults.Spare if len(self._rolls) == 2 else \
+                FrameResults.Strike
 
     def do_roll(self, num):
         self._rolls.append(num)

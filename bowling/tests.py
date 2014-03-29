@@ -99,16 +99,21 @@ class BowlingFrameTestCase(TestCase):
         self.assertEqual(self.target.last_roll, 4)
 
     def test_frame_with_no_rolls_has_in_progress_state(self):
-        self.assertEqual(FrameResults.InProgress, self.target.state)
+        self.assertEqual(self.target.state, FrameResults.InProgress)
 
     def test_frame_with_strike_has_strike_state(self):
         self.target.do_roll(10)
-        self.assertEqual(FrameResults.Strike, self.target.state)
+        self.assertEqual(self.target.state, FrameResults.Strike)
 
-    def test_frame_with_two_rolls_and_less_than_10_score_has_spare_state(self):
+    def test_frame_with_two_rolls_and_less_than_10_score_has_open_state(self):
         self.target.do_roll(3)
         self.target.do_roll(6)
-        self.assertEqual(FrameResults.Spare, self.target.state)
+        self.assertEqual(self.target.state, FrameResults.Open)
+
+    def test_frame_with_two_rolls_and_10_score_has_spare_state(self):
+        self.target.do_roll(3)
+        self.target.do_roll(7)
+        self.assertEqual(self.target.state, FrameResults.Spare)
 
     def test_strike_in_first_roll_completes_frame(self):
         self.target.do_roll(10)
