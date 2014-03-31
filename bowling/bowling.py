@@ -40,6 +40,17 @@ class BowlingFrame():
         return sum(self._rolls)
 
     @property
+    def symbol(self):
+        if self.state == FrameResults.Open:
+            return '-'
+        if self.state == FrameResults.Spare:
+            return '/'
+        if self.state == FrameResults.Strike:
+            return 'X'
+
+        return ''
+
+    @property
     def state(self):
         if sum(self._rolls) < 10:
             return FrameResults.InProgress if len(self._rolls) in [0, 1] else \

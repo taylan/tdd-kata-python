@@ -144,6 +144,23 @@ class BowlingFrameTestCase(TestCase):
         self.target.do_roll(10)
         self.assertTrue(self.target.is_complete)
 
+    def test_open_frame_has_hyphen_symbol(self):
+        self.target.do_roll(3)
+        self.target.do_roll(3)
+        self.assertEqual(self.target.symbol, '-')
+
+    def test_spare_frame_has_slash_symbol(self):
+        self.target.do_roll(3)
+        self.target.do_roll(7)
+        self.assertEqual(self.target.symbol, '/')
+
+    def test_strike_frame_has_X_symbol(self):
+        self.target.do_roll(10)
+        self.assertEqual(self.target.symbol, 'X')
+
+    def test_in_progress_frame_has_no_symbol(self):
+        self.assertEqual(self.target.symbol, '')
+
     def test_bowling_frame_str(self):
         self.assertEqual(str(self.target),
                          '<BowlingFrame({0}), rolls: []>'.format(1))
