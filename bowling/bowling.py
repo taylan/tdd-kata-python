@@ -96,11 +96,13 @@ class BowlingGame():
             if frm.state in [FrameResults.Open, FrameResults.InProgress]:
                 total_score += frm.basic_score
             elif frm.state == FrameResults.Spare:
-                total_score += frm.basic_score
                 if len(self._frames) > i:
                     next_throw = self._frames[i+1].first_roll
                     if next_throw:
+                        total_score += frm.basic_score
                         total_score += next_throw
+                    else:
+                        continue
             elif frm.state == FrameResults.Strike:
                 total_score += frm.basic_score
                 if len(self._frames) > i:

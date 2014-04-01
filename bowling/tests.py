@@ -105,7 +105,7 @@ class BowlingGameScoringTestCase(TestCase):
         self.assertEqual(self.target.score, 10)
         self.target.roll(3)
         self.target.roll(7)
-        self.assertEqual(self.target.score, 30)
+        self.assertEqual(self.target.score, 20)
 
     def test_strike_then_three_then_four_then_all_misses_score_24(self):
         self.target.roll(10)
@@ -116,6 +116,13 @@ class BowlingGameScoringTestCase(TestCase):
 
         self.assertTrue(self.target.game_state, GameStates.Finished)
         self.assertEqual(self.target.score, 24)
+
+    def test_spare_frame_score_not_counted_until_next_throw(self):
+        self.target.roll(7)
+        self.target.roll(3)
+        self.assertEqual(self.target.score, 0)
+        self.target.roll(2)
+        self.assertEqual(self.target.score, 14)
 
 
 class BowlingFrameTestCase(TestCase):
