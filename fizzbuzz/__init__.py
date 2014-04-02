@@ -1,5 +1,6 @@
 class FizzBuzz():
-    def calc_fizz_buzz(self, num):
+    @staticmethod
+    def calc_fizz_buzz(num):
         if not 1 <= num <= 100:
             return None
         if num % 15 == 0:
