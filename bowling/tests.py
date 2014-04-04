@@ -124,6 +124,24 @@ class BowlingGameScoringTestCase(TestCase):
         self.target.roll(2)
         self.assertEqual(self.target.score, 14)
 
+    def test_strike_in_the_last_frame_gives_two_more_rolls(self):
+        for i in range(18):
+            self.target.roll(0)
+        #self.assertEqual(self.target.score, 0)
+        self.assertEqual(self.target.current_frame_number, 10)
+
+        self.target.roll(10)
+        #self.assertEqual(self.target.score, 10)
+        self.assertEqual(self.target.game_state, GameStates.InProgress)
+
+        self.target.roll(10)
+        self.assertEqual(self.target.game_state, GameStates.InProgress)
+        self.assertEqual(self.target.score, 20)
+
+        self.target.roll(10)
+        self.assertEqual(self.target.game_state, GameStates.Finished)
+        self.assertEqual(self.target.score, 30)
+
 
 class BowlingFrameTestCase(TestCase):
     def setUp(self):

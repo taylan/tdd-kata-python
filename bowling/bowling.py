@@ -20,8 +20,8 @@ class BowlingFrame():
         self._rolls = []
 
     @property
-    def is_complete(self):
-        return sum(self._rolls) >= 10 or len(self._rolls) == 2
+    def num(self):
+        return self._num
 
     @property
     def first_roll(self):
@@ -51,13 +51,33 @@ class BowlingFrame():
         return ''
 
     @property
+    def is_complete(self):
+        return self.state != FrameResults.InProgress
+
+    @property
     def state(self):
-        if sum(self._rolls) < 10:
-            return FrameResults.InProgress if len(self._rolls) in [0, 1] else \
-                FrameResults.Open
+        if self._num < 10:
+            if sum(self._rolls) < 10:
+                return FrameResults.InProgress if len(self._rolls) in [0, 1] \
+                    else FrameResults.Open
+            else:
+                return FrameResults.Spare if len(self._rolls) == 2 \
+                    else FrameResults.Strike
         else:
-            return FrameResults.Spare if len(self._rolls) == 2 else \
-                FrameResults.Strike
+            if len(self._rolls) < 2:
+                return FrameResults.InProgress
+            if self.basic_score < 10:
+                return FrameResults.Open
+            if self._rolls[0] == 10:
+                if len(self._rolls) < 3:
+                    return FrameResults.InProgress
+                else:
+                    if sum(self._rolls) < 30:
+                        return FrameResults.Open
+                    elif [r for r in self._rolls if r < 10]:
+                        return FrameResults.Spare
+                    else:
+                        return FrameResults.Strike
 
     def do_roll(self, num):
         self._rolls.append(num)
@@ -65,11 +85,13 @@ class BowlingFrame():
     def __str__(self):
         return '<BowlingFrame({0}), rolls: {1}>'.format(self._num, self._rolls)
 
+    def __repr__(self):
+        return str(self)
+
 
 class BowlingGame():
     def __init__(self):
         self._frames = [BowlingFrame(1)]
-        self._score = 0
         self._last_throw_count = None
 
     @property
@@ -90,26 +112,36 @@ class BowlingGame():
     def score(self):
         return self._calculate_score()
 
+    def _get_throws_starting_from_frame(self, frm_index):
+        throws = []
+        for f in self._frames[frm_index:]:
+            throws.extend(f.rolls)
+        return throws
+
+    def _get_next_throws(self, frm_index):
+        throws = self._frames[frm_index].rolls[1:]
+        for f in self._frames[frm_index:]:
+            throws.extend(f.rolls)
+        return throws
+
     def _calculate_score(self):
         total_score = 0
         for i, frm in enumerate(self._frames):
             if frm.state in [FrameResults.Open, FrameResults.InProgress]:
                 total_score += frm.basic_score
             elif frm.state == FrameResults.Spare:
-                if len(self._frames) > i:
-                    next_throw = self._frames[i+1].first_roll
-                    if next_throw:
-                        total_score += frm.basic_score
-                        total_score += next_throw
-                    else:
-                        continue
+                next_throws = self._get_throws_starting_from_frame(i+1)
+                if next_throws:
+                    total_score += frm.basic_score
+                    total_score += next_throws[0]
+                else:
+                    continue
             elif frm.state == FrameResults.Strike:
                 total_score += frm.basic_score
-                if len(self._frames) > i:
-                    next_throws = self._frames[i+1].rolls
-                    if len(next_throws) < 2 and len(self._frames) > i+2:
-                        next_throws.append(self._frames[i+2].rolls)
-                    total_score += sum(next_throws[:2])
+                if i < 9:
+                    next_throws = self._get_next_throws(i) if i < 9 else frm.rolls[1:]
+                    if next_throws:
+                        total_score += sum(next_throws[1:3])
 
         return total_score
 
@@ -119,7 +151,6 @@ class BowlingGame():
 
         throw = pins if pins is not None else randrange(0, 11)
         self._frames[-1].do_roll(throw)
-        self._score += throw
         self._last_throw_count = throw
 
         if self.game_state != GameStates.Finished and \
