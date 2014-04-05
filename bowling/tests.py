@@ -209,6 +209,20 @@ class BowlingFrameTestCase(TestCase):
         self.target.do_roll(10)
         self.assertEqual(self.target.symbol, 'X')
 
+    def test_last_frame_two_strikes_has_XX_symbol(self):
+        frm = BowlingFrame(10)
+        for i in range(2):
+            frm.do_roll(10)
+
+        self.assertEqual(frm.symbol, 'XX')
+
+    def test_last_frame_three_strikes_has_XXX_symbol(self):
+        frm = BowlingFrame(10)
+        for i in range(3):
+            frm.do_roll(10)
+
+        self.assertEqual(frm.symbol, 'XXX')
+
     def test_in_progress_frame_has_no_symbol(self):
         self.assertEqual(self.target.symbol, '')
 

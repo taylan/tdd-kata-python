@@ -46,7 +46,10 @@ class BowlingFrame():
         if self.state == FrameResults.Spare:
             return '/'
         if self.state == FrameResults.Strike:
-            return 'X'
+            return 'X' if self._num < 10 else 'XXX'
+        if self._num == 10:
+            if len(self._rolls) == 2 and self.basic_score == 20:
+                return 'XX'
 
         return ''
 
