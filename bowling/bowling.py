@@ -32,6 +32,10 @@ class BowlingFrame():
         return self._rolls[-1] if self._rolls else None
 
     @property
+    def roll_count(self):
+        return len(self._rolls)
+
+    @property
     def rolls(self):
         return self._rolls
 
@@ -59,37 +63,36 @@ class BowlingFrame():
 
     @property
     def state(self):
-        if self._num < 10:
-            if sum(self._rolls) < 10:
-                return FrameResults.InProgress if len(self._rolls) in [0, 1] \
+        if self.roll_count == 0:
+            return FrameResults.InProgress
+
+        if self._num != 10:
+            if self.basic_score < 10:
+                return FrameResults.InProgress if self.roll_count == 1 \
                     else FrameResults.Open
             else:
                 return FrameResults.Spare if len(self._rolls) == 2 \
                     else FrameResults.Strike
         else:
-            if len(self._rolls) < 2:
+            if self.roll_count == 1:
                 return FrameResults.InProgress
-            if self.basic_score < 10:
-                return FrameResults.Open
-            if self._rolls[0] == 10:
-                if len(self._rolls) < 3:
+            if self.roll_count == 2:
+                if self._rolls[0] == 10 or self.basic_score == 10:
                     return FrameResults.InProgress
                 else:
-                    if sum(self._rolls) < 30:
-                        return FrameResults.Open
-                    elif [r for r in self._rolls if r < 10]:
-                        return FrameResults.Spare
-                    else:
-                        return FrameResults.Strike
+                    return FrameResults.Open
+            else:
+                if self.basic_score == 30:
+                    return FrameResults.Strike
+                elif sum(self._rolls[:2]) == 10:
+                    return FrameResults.Spare
+                return FrameResults.Open
 
     def do_roll(self, num):
         self._rolls.append(num)
 
     def __str__(self):
         return '<BowlingFrame({0}), rolls: {1}>'.format(self._num, self._rolls)
-
-    def __repr__(self):
-        return str(self)
 
 
 class BowlingGame():
@@ -133,12 +136,10 @@ class BowlingGame():
             if frm.state in [FrameResults.Open, FrameResults.InProgress]:
                 total_score += frm.basic_score
             elif frm.state == FrameResults.Spare:
-                next_throws = self._get_throws_starting_from_frame(i+1)
+                next_throws = self._get_throws_starting_from_frame(frm.num)
                 if next_throws:
                     total_score += frm.basic_score
                     total_score += next_throws[0]
-                else:
-                    continue
             elif frm.state == FrameResults.Strike:
                 total_score += frm.basic_score
                 if i < 9:

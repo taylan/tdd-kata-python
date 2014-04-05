@@ -191,6 +191,31 @@ class BowlingFrameTestCase(TestCase):
         self.target.do_roll(7)
         self.assertEqual(self.target.state, FrameResults.Spare)
 
+    def test_last_frame_without_strike_or_spare_is_in_open_state(self):
+        frm = BowlingFrame(10)
+        frm.do_roll(4)
+        frm.do_roll(3)
+        self.assertEqual(frm.state, FrameResults.Open)
+
+    def test_last_frame_with_spare_has_spare_state(self):
+        frm = BowlingFrame(10)
+        frm.do_roll(7)
+        frm.do_roll(3)
+        frm.do_roll(3)
+        self.assertEqual(frm.state, FrameResults.Spare)
+
+    def test_last_frame_is_complete_after_two_rolls_if_total_less_than_10(self):
+        frm = BowlingFrame(10)
+        frm.do_roll(4)
+        frm.do_roll(3)
+        self.assertTrue(frm.is_complete)
+
+    def test_last_frame_with_spare_in_first_two_rolls_is_not_complete(self):
+        frm = BowlingFrame(10)
+        frm.do_roll(7)
+        frm.do_roll(3)
+        self.assertFalse(frm.is_complete)
+
     def test_strike_in_first_roll_completes_frame(self):
         self.target.do_roll(10)
         self.assertTrue(self.target.is_complete)
