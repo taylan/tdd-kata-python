@@ -84,9 +84,8 @@ class BowlingFrame():
             else:
                 if self.basic_score == 30:
                     return FrameResults.Strike
-                elif sum(self._rolls[:2]) == 10:
-                    return FrameResults.Spare
-                return FrameResults.Open
+
+                return FrameResults.Spare
 
     def do_roll(self, num):
         self._rolls.append(num)
