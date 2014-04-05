@@ -117,6 +117,12 @@ class BowlingGameScoringTestCase(TestCase):
         self.assertTrue(self.target.game_state, GameStates.Finished)
         self.assertEqual(self.target.score, 24)
 
+    def test_perfect_game_scores_300(self):
+        for i in range(12):
+            self.target.roll(10)
+
+        self.assertEqual(self.target.score, 300)
+
     def test_spare_frame_score_not_counted_until_next_throw(self):
         self.target.roll(7)
         self.target.roll(3)
