@@ -1,6 +1,6 @@
 class RecentlyUsedList():
     def __init__(self, values=[]):
-        self._values = values
+        self._values = values or []
 
     def __len__(self):
         return len(self._values)

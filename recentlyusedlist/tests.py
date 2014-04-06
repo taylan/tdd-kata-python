@@ -14,6 +14,10 @@ class RecentlyUsedListsTestCase(unittest.TestCase):
     def test_new_list_has_length_zero(self):
         self.assertEqual(len(self.target), 0)
 
+    def test_list_can_be_initialized_with_values(self):
+        lst = RecentlyUsedList(['a', 'b', 'c'])
+        self.assertListEqual(list(lst), ['a', 'b', 'c'])
+
     def test_can_add_new_item(self):
         self.target.add('a')
         self.assertEqual(len(self.target), 1)
