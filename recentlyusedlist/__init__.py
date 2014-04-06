@@ -11,3 +11,9 @@ class RecentlyUsedList():
     def add(self, value):
         if value and value not in self._values:
             self._values.insert(0, value)
+
+    def last(self):
+        return self._values[-1]
+
+    def first(self):
+        return self._values[0]

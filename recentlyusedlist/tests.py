@@ -6,6 +6,11 @@ class RecentlyUsedListsTestCase(unittest.TestCase):
     def setUp(self):
         self.target = RecentlyUsedList()
 
+    def _fill_list_basic(self):
+        self.target.add('a')
+        self.target.add('b')
+        self.target.add('c')
+
     def test_new_list_has_length_zero(self):
         self.assertEqual(len(self.target), 0)
 
@@ -28,16 +33,12 @@ class RecentlyUsedListsTestCase(unittest.TestCase):
         self.assertEqual(len(self.target), 0)
 
     def test_most_recently_added_item_is_first(self):
-        self.target.add('a')
-        self.target.add('b')
-        self.target.add('c')
+        self._fill_list_basic()
 
         self.assertEqual(self.target[0], 'c')
 
     def test_least_recently_added_item_is_last(self):
-        self.target.add('a')
-        self.target.add('b')
-        self.target.add('c')
+        self._fill_list_basic()
 
         self.assertEqual(self.target[-1], 'a')
 
@@ -48,3 +49,13 @@ class RecentlyUsedListsTestCase(unittest.TestCase):
     def test_accessing_non_existant_index_raises_index_error(self):
         with self.assertRaises(IndexError):
             self.target[0]
+
+    def test_last_method_returns_least_recently_added_item(self):
+        self._fill_list_basic()
+
+        self.assertEqual(self.target.last(), 'a')
+
+    def test_first_method_most_recently_added_item(self):
+        self._fill_list_basic()
+
+        self.assertEqual(self.target.first(), 'c')
