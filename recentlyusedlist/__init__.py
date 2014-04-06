@@ -6,4 +6,5 @@ class RecentlyUsedList():
         return len(self._values)
 
     def add(self, value):
-        self._values.append(value)
+        if value and value not in self._values:
+            self._values.append(value)
