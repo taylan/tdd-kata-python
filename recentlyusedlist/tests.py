@@ -59,3 +59,13 @@ class RecentlyUsedListsTestCase(unittest.TestCase):
         self._fill_list_basic()
 
         self.assertEqual(self.target.first(), 'c')
+
+    def test_can_be_converted_to_list(self):
+        self._fill_list_basic()
+
+        self.assertListEqual(list(self.target), ['c', 'b', 'a'])
+
+    def test_can_be_reversed(self):
+        self._fill_list_basic()
+
+        self.assertListEqual(list(reversed(self.target)), ['a', 'b', 'c'])
