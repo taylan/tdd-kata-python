@@ -33,8 +33,9 @@ class CheckoutItem():
 
 
 class CheckoutRegister():
-    def __init__(self):
+    def __init__(self, pricing_rules=None):
         self._products = {}
+        self._pricing_rules = pricing_rules or []
 
     def scan(self, item):
         prod = self._products.get(item.sku, CheckoutItem(item))
@@ -47,7 +48,19 @@ class CheckoutRegister():
 
     @property
     def total(self):
-        return sum([p.count * p.item.price for sku, p in self._products.items()])
+        totes = sum([p.count * p.item.price for sku, p in self._products.items()])
+        valid_rules = [r for r in self._pricing_rules
+                       if r.is_valid(self._products)]
+
+        return totes
+
+
+class PricingRule():
+    def __init__(self, checker):
+        self._checker = checker
+
+    def is_valid(self, products):
+        return self._checker(products)
 
 
 __all__ = ['Item', 'CheckoutRegister']

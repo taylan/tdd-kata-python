@@ -1,10 +1,19 @@
 import unittest
-from supermarket import CheckoutRegister, Item
+from unittest.mock import Mock
+from supermarket import CheckoutRegister, Item, PricingRule
 
 
 class SupermarketCheckoutTestCase(unittest.TestCase):
     def setUp(self):
-        self.target = CheckoutRegister()
+        self.target = self._get_register()
+
+    @staticmethod
+    def _get_register():
+        return CheckoutRegister()
+
+    @staticmethod
+    def _get_register_with_pricing_rules(rules):
+        return CheckoutRegister(rules)
 
     @staticmethod
     def _get_items(count):
@@ -28,3 +37,11 @@ class SupermarketCheckoutTestCase(unittest.TestCase):
         self._scan_items(2)
 
         self.assertEqual(self.target.unique_item_count, 2)
+
+    def test_checkout_with_pricing_rule_checks_if_rule_is_valid(self):
+        mock_rule = Mock(spec=PricingRule)
+
+        target = self._get_register_with_pricing_rules([mock_rule])
+        total = target.total
+
+        self.assertTrue(mock_rule.is_valid.called)
