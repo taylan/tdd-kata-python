@@ -52,15 +52,22 @@ class CheckoutRegister():
         valid_rules = [r for r in self._pricing_rules
                        if r.is_valid(self._products)]
 
+        print(valid_rules)
+        for rule in valid_rules:
+            rule.execute()
+
         return totes
 
 
 class PricingRule():
-    def __init__(self, checker):
-        self._checker = checker
+    def __init__(self, validator):
+        self._validator = validator
 
     def is_valid(self, products):
-        return self._checker(products)
+        return self._validator(products)
+
+    def execute(self):
+        pass
 
 
 __all__ = ['Item', 'CheckoutRegister']

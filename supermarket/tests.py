@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import Mock
+from unittest.mock import Mock, MagicMock, _set_return_value
 from supermarket import CheckoutRegister, Item, PricingRule
 
 
@@ -40,8 +40,28 @@ class SupermarketCheckoutTestCase(unittest.TestCase):
 
     def test_checkout_with_pricing_rule_checks_if_rule_is_valid(self):
         mock_rule = Mock(spec=PricingRule)
-
         target = self._get_register_with_pricing_rules([mock_rule])
         total = target.total
 
         self.assertTrue(mock_rule.is_valid.called)
+
+    def test_checkout_pricing_rules_are_executed(self):
+        mock_rule = Mock(spec=PricingRule)
+        mock_rule._validator = lambda x: True
+        target = self._get_register_with_pricing_rules([mock_rule])
+        total = target.total
+
+        self.assertTrue(mock_rule.execute.called)
+
+    def test_checkout_only_valid_pricing_rules_are_executed(self):
+        mock_rule1 = Mock(spec=PricingRule)
+        mock_rule1.is_valid = MagicMock(return_value=True)
+
+        mock_rule2 = Mock(spec=PricingRule)
+        mock_rule2.is_valid = MagicMock(return_value=False)
+
+        target = self._get_register_with_pricing_rules([mock_rule1, mock_rule2])
+        total = target.total
+
+        self.assertTrue(mock_rule1.execute.called)
+        self.assertFalse(mock_rule2.execute.called)
