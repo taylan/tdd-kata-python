@@ -74,7 +74,7 @@ class PricingRule():
         pass
 
 
-class BuyXGetYFreePricingRule(PricingRule):
+class BuyXOfItemGetYFreePricingRule(PricingRule):
     """
     Pricing rule for 'Buy X quantity of one item, get Y quantity free'.
     So if it's Buy 3, get 1 free for item 'i1', when there are 4 of 'i1'
@@ -99,4 +99,3 @@ class BuyXGetYFreePricingRule(PricingRule):
                          (self._x + self._y)))
 
 
-__all__ = ['Item', 'CheckoutRegister']

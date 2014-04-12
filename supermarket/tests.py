@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import Mock, MagicMock
 from supermarket import CheckoutRegister, Item, PricingRule
-from supermarket import BuyXGetYFreePricingRule
+from supermarket import BuyXOfItemGetYFreePricingRule
 
 
 class SupermarketCheckoutTestCase(unittest.TestCase):
@@ -68,11 +68,11 @@ class SupermarketCheckoutTestCase(unittest.TestCase):
         self.assertFalse(mock_rule2.execute.called)
 
 
-class BuyXGetYFreePricingRuleTestCase(unittest.TestCase):
+class BuyXOfItemGetYFreePricingRuleTestCase(unittest.TestCase):
     def test_validity_check_returns_false_when_there_are_not_enough_products(self):
         # arrange
         item1 = Item('i1', 10)
-        rule = BuyXGetYFreePricingRule(item1, 3, 1)
+        rule = BuyXOfItemGetYFreePricingRule(item1, 3, 1)
         register = CheckoutRegister([rule])
 
         # act
@@ -86,7 +86,7 @@ class BuyXGetYFreePricingRuleTestCase(unittest.TestCase):
     def test_validity_check_returns_true_when_there_are_enough_products(self):
         # arrange
         item1 = Item('i1', 10)
-        rule = BuyXGetYFreePricingRule(item1, 3, 1)
+        rule = BuyXOfItemGetYFreePricingRule(item1, 3, 1)
         register = CheckoutRegister([rule])
 
         # act
@@ -99,7 +99,7 @@ class BuyXGetYFreePricingRuleTestCase(unittest.TestCase):
     def test_rule_calculates_discount_correctly(self):
         # arrange
         item1 = Item('i1', 10)
-        rule = BuyXGetYFreePricingRule(item1, 3, 1)
+        rule = BuyXOfItemGetYFreePricingRule(item1, 3, 1)
         register = CheckoutRegister([rule])
 
         # act
