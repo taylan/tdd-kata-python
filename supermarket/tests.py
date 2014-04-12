@@ -76,24 +76,35 @@ class BuyXGetYFreePricingRuleTestCase(unittest.TestCase):
         register = CheckoutRegister([rule])
 
         # act
-        register.scan(item1)
-        register.scan(item1)
+        for i in range(2):
+            register.scan(item1)
         total = register.total
 
         #assert
         self.assertEqual(total, 20)
 
-    def test_rule_works_when_there_are_enough_products(self):
+    def test_validity_check_returns_true_when_there_are_enough_products(self):
         # arrange
         item1 = Item('i1', 10)
         rule = BuyXGetYFreePricingRule(item1, 3, 1)
         register = CheckoutRegister([rule])
 
         # act
-        register.scan(item1)
-        register.scan(item1)
-        register.scan(item1)
-        register.scan(item1)
+        for i in range(4):
+            register.scan(item1)
+
+        #assert
+        self.assertTrue(rule.is_valid(register._products))
+
+    def test_rule_calculates_discount_correctly(self):
+        # arrange
+        item1 = Item('i1', 10)
+        rule = BuyXGetYFreePricingRule(item1, 3, 1)
+        register = CheckoutRegister([rule])
+
+        # act
+        for i in range(4):
+            register.scan(item1)
         total = register.total
 
         #assert

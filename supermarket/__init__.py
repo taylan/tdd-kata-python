@@ -75,6 +75,15 @@ class PricingRule():
 
 
 class BuyXGetYFreePricingRule(PricingRule):
+    """
+    Pricing rule for 'Buy X quantity of one item, get Y quantity free'.
+    So if it's Buy 3, get 1 free for item 'i1', when there are 4 of 'i1'
+    in the register, the customer will only pay for 3.
+
+    This rule acheives that buy subtracting the cost of the free item
+    from the total.
+    """
+
     def __init__(self, item, x, y):
         self._item = item
         self._x = x
