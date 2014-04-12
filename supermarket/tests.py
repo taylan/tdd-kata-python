@@ -1,6 +1,7 @@
 import unittest
-from unittest.mock import Mock, MagicMock, _set_return_value
+from unittest.mock import Mock, MagicMock
 from supermarket import CheckoutRegister, Item, PricingRule
+from supermarket import BuyXGetYFreePricingRule
 
 
 class SupermarketCheckoutTestCase(unittest.TestCase):
@@ -65,3 +66,35 @@ class SupermarketCheckoutTestCase(unittest.TestCase):
 
         self.assertTrue(mock_rule1.execute.called)
         self.assertFalse(mock_rule2.execute.called)
+
+
+class BuyXGetYFreePricingRuleTestCase(unittest.TestCase):
+    def test_validity_check_returns_false_when_there_are_not_enough_products(self):
+        # arrange
+        item1 = Item('i1', 10)
+        rule = BuyXGetYFreePricingRule(item1, 3, 1)
+        register = CheckoutRegister([rule])
+
+        # act
+        register.scan(item1)
+        register.scan(item1)
+        total = register.total
+
+        #assert
+        self.assertEqual(total, 20)
+
+    def test_rule_works_when_there_are_enough_products(self):
+        # arrange
+        item1 = Item('i1', 10)
+        rule = BuyXGetYFreePricingRule(item1, 3, 1)
+        register = CheckoutRegister([rule])
+
+        # act
+        register.scan(item1)
+        register.scan(item1)
+        register.scan(item1)
+        register.scan(item1)
+        total = register.total
+
+        #assert
+        self.assertEqual(total, 30)

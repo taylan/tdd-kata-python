@@ -31,6 +31,9 @@ class CheckoutItem():
     def item(self):
         return self._item
 
+    def __repr__(self):
+        return 'CheckoutItem: {0}-#{1}'.format(self._item.sku, self._count)
+
 
 class CheckoutRegister():
     def __init__(self, pricing_rules=None):
@@ -53,8 +56,9 @@ class CheckoutRegister():
                        if r.is_valid(self._products)]
 
         print(valid_rules)
+
         for rule in valid_rules:
-            rule.execute()
+            totes = rule.execute(self._products, totes)
 
         return totes
 
@@ -66,8 +70,24 @@ class PricingRule():
     def is_valid(self, products):
         return self._validator(products)
 
-    def execute(self):
+    def execute(self, products, total):
         pass
+
+
+class BuyXGetYFreePricingRule(PricingRule):
+    def __init__(self, item, x, y):
+        self._item = item
+        self._x = x
+        self._y = y
+
+    def is_valid(self, products):
+        ci = products.get(self._item.sku, None)
+        return ci and ci.count >= (self._x + self._y)
+
+    def execute(self, products, total):
+        return total - (self._item.price *
+                        (products.get(self._item.sku).count //
+                         (self._x + self._y)))
 
 
 __all__ = ['Item', 'CheckoutRegister']
