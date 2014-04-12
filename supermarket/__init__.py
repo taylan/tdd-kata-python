@@ -55,8 +55,6 @@ class CheckoutRegister():
         valid_rules = [r for r in self._pricing_rules
                        if r.is_valid(self._products)]
 
-        print(valid_rules)
-
         for rule in valid_rules:
             totes = rule.execute(self._products, totes)
 
@@ -77,7 +75,7 @@ class PricingRule():
 class BuyXOfItemGetYFreePricingRule(PricingRule):
     """
     Pricing rule for 'Buy X quantity of one item, get Y quantity free'.
-    So if it's Buy 3, get 1 free for item 'i1', when there are 4 of 'i1'
+    So if it's "Buy 3, get 1 free for item 'i1'", when there are 4 of 'i1'
     in the register, the customer will only pay for 3.
 
     This rule acheives that buy subtracting the cost of the free item
@@ -99,3 +97,25 @@ class BuyXOfItemGetYFreePricingRule(PricingRule):
                          (self._x + self._y)))
 
 
+class BuyItemXGetItemYFreePricingRule(PricingRule):
+    """
+    Pricing rule for buy 1 of item X, get item Y free.
+    So if it's "Buy item i1, get item i2 free", when there are 1 i1 and 1 i2
+    in the register, the 1 i2 will be free.
+
+    If there are 4 i1s and 7 i2s, the customer will pay for 4 i1s and 3 i2s.
+    """
+
+    def __init__(self, item1, item2):
+        self._item1 = item1
+        self._item2 = item2
+
+    def is_valid(self, products):
+        return products.get(self._item1.sku, None) \
+            and products.get(self._item2.sku)
+
+    def execute(self, products, total):
+        item_1_count = products[self._item1.sku].count
+        item_2_count = products[self._item2.sku].count
+
+        return total - (min(item_1_count, item_2_count) * self._item2.price)

@@ -1,7 +1,8 @@
 import unittest
 from unittest.mock import Mock, MagicMock
 from supermarket import CheckoutRegister, Item, PricingRule
-from supermarket import BuyXOfItemGetYFreePricingRule
+from supermarket import (BuyXOfItemGetYFreePricingRule,
+                         BuyItemXGetItemYFreePricingRule)
 
 
 class SupermarketCheckoutTestCase(unittest.TestCase):
@@ -81,7 +82,7 @@ class BuyXOfItemGetYFreePricingRuleTestCase(unittest.TestCase):
         total = register.total
 
         #assert
-        self.assertEqual(total, 20)
+        self.assertFalse(rule.is_valid(register._products))
 
     def test_validity_check_returns_true_when_there_are_enough_products(self):
         # arrange
@@ -109,3 +110,73 @@ class BuyXOfItemGetYFreePricingRuleTestCase(unittest.TestCase):
 
         #assert
         self.assertEqual(total, 30)
+
+
+class BuyItemXGetItemYFreePricingRuleTestCase(unittest.TestCase):
+    def test_validity_check_returns_false_when_item_x_is_not_in_register(self):
+        item1 = Item('i1', 10)
+        item2 = Item('i2', 20)
+        rule = BuyItemXGetItemYFreePricingRule(item1, item2)
+        register = CheckoutRegister([rule])
+
+        register.scan(item2)
+
+        self.assertFalse(rule.is_valid(register._products))
+
+    def test_validity_check_returns_false_when_item_y_is_not_in_register(self):
+        item1 = Item('i1', 10)
+        item2 = Item('i2', 20)
+        rule = BuyItemXGetItemYFreePricingRule(item1, item2)
+        register = CheckoutRegister([rule])
+
+        register.scan(item1)
+
+        self.assertFalse(rule.is_valid(register._products))
+
+    def test_validity_check_returns_true_when_both_items_are_in_register(self):
+        item1 = Item('i1', 10)
+        item2 = Item('i2', 20)
+        rule = BuyItemXGetItemYFreePricingRule(item1, item2)
+        register = CheckoutRegister([rule])
+
+        register.scan(item1)
+        register.scan(item2)
+
+        self.assertTrue(rule.is_valid(register._products))
+
+    def test_rule_calculates_discount_correctly(self):
+        item1 = Item('i1', 10)
+        item2 = Item('i2', 20)
+        rule = BuyItemXGetItemYFreePricingRule(item1, item2)
+        register = CheckoutRegister([rule])
+
+        register.scan(item1)
+        register.scan(item2)
+
+        self.assertEqual(register.total, 10)
+
+    def test_rule_discounts_correctly_when_there_are_more_Xs_than_Ys(self):
+        item1 = Item('i1', 10)
+        item2 = Item('i2', 20)
+        rule = BuyItemXGetItemYFreePricingRule(item1, item2)
+        register = CheckoutRegister([rule])
+
+        for i in range(4):
+            register.scan(item1)
+        for i in range(2):
+            register.scan(item2)
+
+        self.assertEqual(register.total, 40)
+
+    def test_rule_discounts_correctly_when_there_are_more_Ys_than_Xs(self):
+        item1 = Item('i1', 10)
+        item2 = Item('i2', 20)
+        rule = BuyItemXGetItemYFreePricingRule(item1, item2)
+        register = CheckoutRegister([rule])
+
+        for i in range(4):
+            register.scan(item1)
+        for i in range(7):
+            register.scan(item2)
+
+        self.assertEqual(register.total, 100)
