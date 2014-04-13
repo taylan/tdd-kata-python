@@ -70,6 +70,18 @@ class SupermarketCheckoutTestCase(unittest.TestCase):
         self.assertFalse(mock_rule2.execute.called)
 
 
+class PricingRuleBaseTestCase(unittest.TestCase):
+    def test_pricing_rule_base_is_valid_raises_not_implemented_error(self):
+        rule = PricingRule()
+        with self.assertRaises(NotImplementedError):
+            rule.is_valid([])
+
+    def test_pricing_rule_base_execute_raises_not_implemented_error(self):
+        rule = PricingRule()
+        with self.assertRaises(NotImplementedError):
+            rule.execute([], 0)
+
+
 class BuyXOfItemGetYFreePricingRuleTestCase(unittest.TestCase):
     def test_validity_check_returns_false_when_there_are_not_enough_products(self):
         # arrange

@@ -31,9 +31,6 @@ class CheckoutItem():
     def item(self):
         return self._item
 
-    def __repr__(self):
-        return 'CheckoutItem: {0}-#{1}'.format(self._item.sku, self._count)
-
 
 class CheckoutRegister():
     def __init__(self, pricing_rules=None):
@@ -62,14 +59,11 @@ class CheckoutRegister():
 
 
 class PricingRule():
-    def __init__(self, validator):
-        self._validator = validator
-
     def is_valid(self, products):
-        return self._validator(products)
+        raise NotImplementedError()
 
     def execute(self, products, total):
-        pass
+        raise NotImplementedError()
 
 
 class BuyXOfItemGetYFreePricingRule(PricingRule):
