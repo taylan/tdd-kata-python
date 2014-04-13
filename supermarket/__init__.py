@@ -119,3 +119,18 @@ class BuyItemXGetItemYFreePricingRule(PricingRule):
         item_2_count = products[self._item2.sku].count
 
         return total - (min(item_1_count, item_2_count) * self._item2.price)
+
+
+class FlatDiscountPricingRule(PricingRule):
+    def __init__(self, item, discount):
+        self._item = item
+        self._discount = discount
+        if not isinstance(self._discount, float) or not 0 < self._discount <= 1:
+            raise ValueError()
+
+    def is_valid(self, products):
+        return products.get(self._item.sku, None)
+
+    def execute(self, products, total):
+        ci = products[self._item.sku]
+        return total - (ci.count * ci.item.price * self._discount)

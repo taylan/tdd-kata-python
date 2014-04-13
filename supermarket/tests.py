@@ -2,7 +2,8 @@ import unittest
 from unittest.mock import Mock, MagicMock
 from supermarket import CheckoutRegister, Item, PricingRule
 from supermarket import (BuyXOfItemGetYFreePricingRule,
-                         BuyItemXGetItemYFreePricingRule)
+                         BuyItemXGetItemYFreePricingRule,
+                         FlatDiscountPricingRule)
 
 
 class SupermarketCheckoutTestCase(unittest.TestCase):
@@ -180,3 +181,46 @@ class BuyItemXGetItemYFreePricingRuleTestCase(unittest.TestCase):
             register.scan(item2)
 
         self.assertEqual(register.total, 100)
+
+
+class FlatDiscountPricingRuleTestCase(unittest.TestCase):
+    def test_validity_check_succeeds_when_discounted_item_is_in_register(self):
+        item1 = Item('i1', 10)
+        rule = FlatDiscountPricingRule(item1, 0.1)
+        register = CheckoutRegister([rule])
+        register.scan(item1)
+
+        self.assertTrue(rule.is_valid(register._products))
+
+    def test_init_with_negative_discount_value_raises_value_error(self):
+        with self.assertRaises(ValueError):
+            FlatDiscountPricingRule(Item('i1', 10), -1)
+
+    def test_init_with_zero_discount_value_raises_value_error(self):
+        with self.assertRaises(ValueError):
+            FlatDiscountPricingRule(Item('i1', 10), 0)
+
+    def test_init_with_discount_greater_than_1_raises_value_error(self):
+        with self.assertRaises(ValueError):
+            FlatDiscountPricingRule(Item('i1', 10), 2)
+
+    def test_init_with_non_float_discount_value_raises_value_error(self):
+        with self.assertRaises(ValueError):
+            FlatDiscountPricingRule(Item('i1', 10), 1)
+
+    def test_rule_discounts_correctly_for_single_item(self):
+        item1 = Item('i1', 100)
+        rule = FlatDiscountPricingRule(item1, 0.2)
+        register = CheckoutRegister([rule])
+        register.scan(item1)
+
+        self.assertEqual(register.total, 80)
+
+    def test_rule_discounts_correctly_for_multiple_items(self):
+        item1 = Item('i1', 100)
+        rule = FlatDiscountPricingRule(item1, 0.2)
+        register = CheckoutRegister([rule])
+        for i in range(10):
+            register.scan(item1)
+
+        self.assertEqual(register.total, 800)
