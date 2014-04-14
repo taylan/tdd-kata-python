@@ -70,6 +70,21 @@ class SupermarketCheckoutTestCase(unittest.TestCase):
         self.assertTrue(mock_rule1.execute.called)
         self.assertFalse(mock_rule2.execute.called)
 
+    def test_can_scan_multiple_of_same_item(self):
+        item1 = Item('i1', 100)
+        self.target.scan_multiple(item1, 10)
+
+        self.assertEqual(self.target.unique_item_count, 1)
+        self.assertEqual(self.target.total, 1000)
+
+    def test_can_scan_many_different_items(self):
+        items = self._get_items(10)
+        total_cost = sum([i.price for i in items])
+        self.target.scan_many(items)
+
+        self.assertEqual(self.target.unique_item_count, 10)
+        self.assertEqual(self.target.total, total_cost)
+
 
 class PricingRuleBaseTestCase(unittest.TestCase):
     def test_pricing_rule_base_is_valid_raises_not_implemented_error(self):

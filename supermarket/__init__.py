@@ -42,6 +42,14 @@ class CheckoutRegister():
         prod.count += 1
         self._products[item.sku] = prod
 
+    def scan_multiple(self, item, count):
+        for i in range(count):
+            self.scan(item)
+
+    def scan_many(self, items):
+        for i in items:
+            self.scan(i)
+
     @property
     def unique_item_count(self):
         return len(self._products.keys())
