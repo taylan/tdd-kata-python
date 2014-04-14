@@ -3,7 +3,8 @@ from unittest.mock import Mock, MagicMock
 from supermarket import CheckoutRegister, Item, PricingRule
 from supermarket import (BuyXOfItemGetYFreePricingRule,
                          BuyItemXGetItemYFreePricingRule,
-                         FlatDiscountPricingRule)
+                         FlatDiscountPricingRule,
+                         FlatDiscountOverCertainBasketSizePricingRule)
 
 
 class SupermarketCheckoutTestCase(unittest.TestCase):
@@ -236,3 +237,21 @@ class FlatDiscountPricingRuleTestCase(unittest.TestCase):
             register.scan(item1)
 
         self.assertEqual(register.total, 800)
+
+
+class FlatDiscountOverCertainBasketSizePricingRuleTestCase(unittest.TestCase):
+    def test_discount_is_not_applied_when_total_cost_under_limit(self):
+        rule = FlatDiscountOverCertainBasketSizePricingRule(200, 0.1)
+        register = CheckoutRegister([rule])
+
+        self.assertFalse(rule.is_valid(register._products))
+
+    def test_discount_is_applied_correctly(self):
+        rule = FlatDiscountOverCertainBasketSizePricingRule(200, 0.1)
+        register = CheckoutRegister([rule])
+
+        item1 = Item('i1', 30)
+        for i in range(10):
+            register.scan(item1)
+
+        self.assertEqual(register.total, 270)

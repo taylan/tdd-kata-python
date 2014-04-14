@@ -47,8 +47,12 @@ class CheckoutRegister():
         return len(self._products.keys())
 
     @property
+    def total_without_discount(self):
+        return sum([p.count * p.item.price for sku, p in self._products.items()])
+
+    @property
     def total(self):
-        totes = sum([p.count * p.item.price for sku, p in self._products.items()])
+        totes = self.total_without_discount
         valid_rules = [r for r in self._pricing_rules
                        if r.is_valid(self._products)]
 
@@ -128,3 +132,16 @@ class FlatDiscountPricingRule(PricingRule):
     def execute(self, products, total):
         ci = products[self._item.sku]
         return total - (ci.count * ci.item.price * self._discount)
+
+
+class FlatDiscountOverCertainBasketSizePricingRule(PricingRule):
+    def __init__(self, lower_limit, discount):
+        self._lower_limit = lower_limit
+        self._discount = discount
+
+    def is_valid(self, products):
+        return sum([p.count * p.item.price
+                    for sku, p in products.items()]) > self._lower_limit
+
+    def execute(self, products, total):
+        return total - (total * self._discount)
