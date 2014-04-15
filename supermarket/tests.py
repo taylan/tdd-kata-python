@@ -21,7 +21,7 @@ class SupermarketCheckoutTestCase(unittest.TestCase):
 
     @staticmethod
     def _get_items(count):
-        return [Item('i{0}'.format(i), i * 10) for i in range(1, count+1)]
+        return [Item('i{0}'.format(i), i * 10) for i in range(1, count + 1)]
 
     def _scan_items(self, count):
         for item in self._get_items(count):
@@ -99,7 +99,8 @@ class PricingRuleBaseTestCase(unittest.TestCase):
 
 
 class BuyXOfItemGetYFreePricingRuleTestCase(unittest.TestCase):
-    def test_validity_check_returns_false_when_there_are_not_enough_products(self):
+    def test_validity_check_returns_false_when_there_are_not_enough_products(
+            self):
         # arrange
         item1 = Item('i1', 10)
         rule = BuyXOfItemGetYFreePricingRule(item1, 3, 1)

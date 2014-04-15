@@ -1,5 +1,3 @@
-
-
 class Item():
     def __init__(self, sku, price):
         self._sku = sku
@@ -56,7 +54,8 @@ class CheckoutRegister():
 
     @property
     def total_without_discount(self):
-        return sum([p.count * p.item.price for sku, p in self._products.items()])
+        return sum(
+            [p.count * p.item.price for sku, p in self._products.items()])
 
     @property
     def total(self):
