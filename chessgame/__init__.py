@@ -37,7 +37,7 @@ class ChessPiece():
                 ', '.join(ChessPiece.RANKS)))
         if self._file and self._file not in ChessPiece.FILES:
             raise InvalidNotationException('Files must be one of {0}'.format(
-                ','.join(ChessPiece.FILES)))
+                ','.join(map(str, ChessPiece.FILES))))
 
     @property
     def position(self):
