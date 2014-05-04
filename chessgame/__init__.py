@@ -15,6 +15,14 @@ class ChessPiece():
     RANKS = 'abcdefgh'
     FILES = list(range(1, 9))
 
+    def _validate_rank_and_file(self):
+        if self._rank and self._rank not in ChessPiece.RANKS:
+            raise InvalidPositionException('Rank must be one of {0}'.format(
+                ', '.join(ChessPiece.RANKS)))
+        if self._file and self._file not in ChessPiece.FILES:
+            raise InvalidPositionException('Files must be one of {0}'.format(
+                ','.join(map(str, ChessPiece.FILES))))
+
     @staticmethod
     def get_position_from_notation(notation):
         if len(notation) != 2 or \
@@ -32,16 +40,16 @@ class ChessPiece():
         else:
             self._rank, self._file = rank, file
 
-        if self._rank and self._rank not in ChessPiece.RANKS:
-            raise InvalidNotationException('Rank must be one of {0}'.format(
-                ', '.join(ChessPiece.RANKS)))
-        if self._file and self._file not in ChessPiece.FILES:
-            raise InvalidNotationException('Files must be one of {0}'.format(
-                ','.join(map(str, ChessPiece.FILES))))
+        self._validate_rank_and_file()
 
     @property
     def position(self):
         return 'a' if self._rank and self._file else None
 
 
-class InvalidNotationException(Exception): pass
+class InvalidNotationException(Exception):
+    pass
+
+
+class InvalidPositionException(Exception):
+    pass

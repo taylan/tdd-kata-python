@@ -1,5 +1,6 @@
 import unittest
-from chessgame import ChessBoard, ChessPiece, InvalidNotationException
+from chessgame import (ChessBoard, ChessPiece,
+                       InvalidNotationException, InvalidPositionException)
 
 
 class ChessBoardTestCase(unittest.TestCase):
@@ -19,11 +20,11 @@ class ChessPieceTestCase(unittest.TestCase):
         self.assertIsNotNone(cp.position)
 
     def test_init_fails_with_invalid_rank(self):
-        with self.assertRaises(InvalidNotationException):
+        with self.assertRaises(InvalidPositionException):
             ChessPiece(rank='x', file=2)
 
     def test_init_fails_with_invalid_file(self):
-        with self.assertRaises(InvalidNotationException):
+        with self.assertRaises(InvalidPositionException):
             ChessPiece(rank='a', file=9)
 
     def test_chess_piece_can_be_initialized_with_algebraic_notation(self):
