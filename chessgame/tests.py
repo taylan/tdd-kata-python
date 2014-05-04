@@ -1,5 +1,5 @@
 import unittest
-from chessgame import (ChessBoard, ChessPiece,
+from chessgame import (ChessBoard, ChessPiece, ChessSquare,
                        InvalidNotationException, InvalidPositionException)
 
 
@@ -8,6 +8,16 @@ class ChessBoardTestCase(unittest.TestCase):
         cb = ChessBoard()
         self.assertEqual(8, cb.width)
         self.assertEqual(8, cb.height)
+
+    def test_can_retrieve_square_with_valid_position(self):
+        cb = ChessBoard()
+        self.assertIsNotNone(cb.get_square(rank='a', file=1))
+        self.assertIsInstance(cb.get_square(rank='a', file=1), ChessSquare)
+
+    def test_retrieving_square_with_invalid_position_raises_exception(self):
+        cb = ChessBoard()
+        with self.assertRaises(InvalidPositionException):
+            cb.get_square(rank='x', file=9)
 
 
 class ChessPieceTestCase(unittest.TestCase):

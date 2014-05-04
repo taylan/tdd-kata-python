@@ -1,3 +1,8 @@
+
+class ChessSquare():
+    pass
+
+
 class ChessBoard():
     _width = 8
     _height = 8
@@ -10,16 +15,21 @@ class ChessBoard():
     def height(self):
         return self._height
 
+    def get_square(self, rank=None, file=None):
+        ChessPiece.validate_rank_and_file(rank, file)
+        return ChessSquare()
+
 
 class ChessPiece():
     RANKS = 'abcdefgh'
     FILES = list(range(1, 9))
 
-    def _validate_rank_and_file(self):
-        if self._rank and self._rank not in ChessPiece.RANKS:
+    @staticmethod
+    def validate_rank_and_file(rank, file):
+        if rank and rank not in ChessPiece.RANKS:
             raise InvalidPositionException('Rank must be one of {0}'.format(
                 ', '.join(ChessPiece.RANKS)))
-        if self._file and self._file not in ChessPiece.FILES:
+        if file and file not in ChessPiece.FILES:
             raise InvalidPositionException('Files must be one of {0}'.format(
                 ','.join(map(str, ChessPiece.FILES))))
 
@@ -40,7 +50,7 @@ class ChessPiece():
         else:
             self._rank, self._file = rank, file
 
-        self._validate_rank_and_file()
+        self.validate_rank_and_file(self._rank, self._file)
 
     @property
     def position(self):
