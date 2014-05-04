@@ -22,8 +22,8 @@ class ChessPiece():
                 int(notation[1]) not in ChessPiece.FILES:
             raise InvalidNotationException('Algebraic Notation must be in '
                                            'format "AN" where A is'
-                                           'the alpha rank, and N is'
-                                           'the numeric file.')
+                                           'the rank (a-h), and N is'
+                                           'the file (1-8).')
         return notation[0], int(notation[1])
 
     def __init__(self, notation=None, rank=None, file=None):
