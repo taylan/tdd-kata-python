@@ -1,11 +1,26 @@
+from collections import OrderedDict
+
 
 class ChessSquare():
-    pass
+    def __init__(self, rank, file):
+        self._rank = rank
+        self._file = file
+
+    def __repr__(self):
+        return '<ChessSquare: rank={0} file={1}>'.format(self._rank,
+                                                         self._file)
 
 
 class ChessBoard():
     _width = 8
     _height = 8
+
+    def __init__(self):
+        self._board = OrderedDict()
+        for rank in ChessPiece.RANKS:
+            self._board[rank] = {}
+            for file in ChessPiece.FILES:
+                self._board[rank][file] = ChessSquare(rank=rank, file=file)
 
     @property
     def width(self):
@@ -17,7 +32,7 @@ class ChessBoard():
 
     def get_square(self, rank=None, file=None):
         ChessPiece.validate_rank_and_file(rank, file)
-        return ChessSquare()
+        return self._board[rank][file]
 
 
 class ChessPiece():
